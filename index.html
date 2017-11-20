@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+    <title>街区地图</title>
+    <style type="text/css">
+        @media only screen and (max-width: 670px) {
+            #navPosition {
+                position: fixed;
+                left: -240px;
+            }
+            .openList {
+                left: 0px !important;
+            }
+            #navPosition {
+                -webkit-transition: all 0.3s ease;
+                -moz-transition: all 0.3s ease;
+                transition: all 0.3s ease;
+            }
+            #mapContainer>div>a:nth-child(1) {
+                display: block !important;
+            }
+        }
+
+        #mapContainer {
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+            background: #000;
+            color: #fff;
+            width: calc(100%-200px);
+            width: -webkit-calc(100%-200px);
+            width: -zom-calc(100%-200px);
+            height: 100%;
+        }
+
+        #mapContainer a {
+            text-decoration-line: none;
+            display: block;
+            color: #fff;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        .cbp-spmenu-push-toleft {
+            overflow-x: hidden;
+            position: relative;
+            left: 240px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- left -->
+    <div id="navPosition">
+        <h4>街区地图</h1>
+            <input type="text" id="suggestId" size="20" placeholder="请输入查询内容" />
+            <button style="line-height:21px" data-bind="click:goSearch">QUEY!</button>
+            <div id="searchResultPanel">
+                <ul data-bind="foreach:items">
+                    <li>
+                        <a href="javascript:;" data-bind="click:$root.locate">
+                            <span data-bind="text:title"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- <div data-bind="text:value"></div> -->
+    </div>
+    <!-- left end -->
+
+    <!-- right -->
+    <div id="mapContainer">
+        <div>
+            <a href="javascript:;" style="display:none" onclick="showList()">MENU</a>
+        </div>
+        <div id="allmap"></div>
+    </div>
+    <!-- right end -->
+
+</body>
+</body>
+
+</html>
+<script src="http://api.map.baidu.com/api?v=2.0&ak=jg25XKGpUAwxqo0IPxNqYA9GMtzIFpOU"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+<script src="script/knockout-3.4.2.js"></script>
+<script type="text/javascript">
+    //菜单触发
+    (function (window) {
+
+        'use strict';
+
+        // class helper functions from bonzo https://github.com/ded/bonzo
+
+        function classReg(className) {
+            return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+        }
+
+        // classList support for class management
+        // altho to be fair, the api sucks because it won't accept multiple classes at once
+        var hasClass, addClass, removeClass;
+
+        if ('classList' in document.documentElement) {
+            hasClass = function (elem, c) {
+                return elem.classList.contains(c);
+            };
+            addClass = function (elem, c) {
+                elem.classList.add(c);
+            };
+            removeClass = function (elem, c) {
+                elem.classList.remove(c);
+            };
+        } else {
+            hasClass = function (elem, c) {
+                return classReg(c).test(elem.className);
+            };
+            addClass = function (elem, c) {
+                if (!hasClass(elem, c)) {
+                    elem.className = elem.className + ' ' + c;
+                }
+            };
+            removeClass = function (elem, c) {
+                elem.className = elem.className.replace(classReg(c), ' ');
+            };
+        }
+
+        function toggleClass(elem, c) {
+            var fn = hasClass(elem, c) ? removeClass : addClass;
+            fn(elem, c);
+        }
+
+        window.classie = {
+            // full names
+            hasClass: hasClass,
+            addClass: addClass,
+            removeClass: removeClass,
+            toggleClass: toggleClass,
+            // short names
+            has: hasClass,
+            add: addClass,
+            remove: removeClass,
+            toggle: toggleClass
+        };
+
+    })(window);
+
+    //basic info
+    let documentClient = document.documentElement || document.body;
+    let mapObj = document.getElementById('allmap');
+    let markInfoWindow=null;
+    let clientDivice = 'pc';
+    var content = function (ad, url) {
+        return `<div style="margin:0;line-height:20px;padding:2px;font-size:14px">
+            地址：${ad}。
+            <div>详情: <a style="display:inline;color:blue;" href="${url}" target="_blank">详细信息</a></div>
+            </div>`;
+    }
+
+    if (documentClient.clientWidth < 671) {
+        clientDivice = 'mobile';
+    }
+    //百度地图
+    mapObj.style.height = document.documentElement.clientHeight - (clientDivice == 'mobile' ? 30 : 0) + 'px';
+
+    // 百度地图API功能
+    function G(id) {
+        return document.getElementById(id);
+    }
+    var map = new BMap.Map("allmap");
+
+    var point = new BMap.Point(104.06792346, 30.67994285);
+    map.centerAndZoom(point, 18);
+    map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
+    map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+
+    var geolocation = new BMap.Geolocation();
+    //浏览器定位
+    geolocation.getCurrentPosition(function (r) {
+        // 初始化地图,设置城市和地图级别。
+        if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+            // var mk = new BMap.Marker(r.point);
+            // map.addOverlay(mk);
+            map.panTo(r.point);
+
+        } else {
+            console.log('failed' + this.getStatus());
+        }
+    }, {
+        enableHighAccuracy: true
+    })
+
+
+    //数据查询和绑定
+    function viewModel() {
+        var that = this;
+        this.items = ko.observableArray([{
+            title: '暂无数据'
+        }]);
+        // this.value=ko.observable(333);
+        this.goSearch = function () {
+            map.clearOverlays();
+            var keyWord = document.getElementById('suggestId').value;
+            var options = {
+                onSearchComplete: function (results) {
+                    that.items.removeAll();
+                    if (local.getStatus() == BMAP_STATUS_SUCCESS) {
+                        that.items.push(...results.vr);
+                    }
+                },
+                onInfoHtmlSet: function (m) {
+                    if(markInfoWindow){
+                        markInfoWindow.close();
+                    }
+                },
+                renderOptions: {
+                    selectFirstResult: false,
+                    map: map
+                }
+            };
+
+            var local = new BMap.LocalSearch(map, options);
+            // local.setMarkersSetCallback(function (pois) {
+            //     for (var i = 0; i < pois.length; i++) {
+            //         pois[i].marker.setLabel(content(pois[i].address, pois[i].detailUrl));
+            //         pois[i].marker.addEventListener("infowindowopen", function (e) {
+            //           console.log(e);
+            //         })
+            //     }
+            // })
+            local.search(keyWord);
+        }
+        this.locate = function (item) {
+            if (item.point) {
+                markInfoWindow = new BMapLib.SearchInfoWindow(map, content(item.address, item.detailUrl), {
+                    title: item.title, //标题
+                    width: 290, //宽度
+                    height: 60, //高度
+                    panel: "panel", //检索结果面板
+                    enableAutoPan: true, //自动平移
+                    searchTypes: [
+                        // BMAPLIB_TAB_SEARCH, //周边检索
+                        // BMAPLIB_TAB_TO_HERE, //到这里去
+                        // BMAPLIB_TAB_FROM_HERE //从这里出发
+                    ]
+                });
+                markInfoWindow.open(item.point);
+            }
+            showList();
+        }
+    }
+    ko.applyBindings(new viewModel());
+
+    function showList() {
+        if (clientDivice == 'pc') {
+            return;
+        }
+        classie.toggle(document.body, 'cbp-spmenu-push-toleft');
+        classie.toggle(document.getElementById('navPosition'), 'openList');
+    }
+</script>

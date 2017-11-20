@@ -1,0 +1,59 @@
+body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    background: #000;
+    color:#fff;
+}
+
+#allmap {
+    width: calc(100%-10px);
+    width: -webkit-calc(100%-10px);
+    width: -zom-calc(100%-10px);
+    height: 100%;
+    margin: 0;
+    padding: 0 5px;
+    font-family: "微软雅黑";
+}
+
+#navPosition {
+    padding: 3px 6px;
+    float: left;
+    width: 220px;
+    height: 100%;
+  
+}
+#navPosition input{
+    margin-left: 3px;
+    width: 150px;
+    line-height: 20px;
+    font-size: 16px;
+}
+h4 {
+    margin: 0px;
+}
+
+#searchResultPanel {
+    padding-top: 10px;
+    width: 100%;
+    
+}
+
+#searchResultPanel ul {
+    margin: 0;
+    padding: 0 5px;
+}
+
+#searchResultPanel li {
+    margin: 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+    list-style: none;
+    font-size: 16px;
+    color: #fff;
+}
+
+#searchResultPanel a {
+    text-decoration-line: none;
+    color: #fff;
+}
