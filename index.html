@@ -39,7 +39,7 @@
                 <ul data-bind="foreach:mapFiltered">
                     <li>
                         <a class="list" href="javascript:;" data-bind="click:$root.locate">
-                            </span>
+                            <span data-bind="text:$index() + 1 +'.'"></span>
                             <span data-bind="text:name"></span>
                         </a>
                     </li>

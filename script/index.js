@@ -105,7 +105,7 @@ function createMarker(items) {
             let marker = new BMap.Marker(point, {});
             marker.uid = items[i].uid;
             let label = new BMap.Label(i + 1, {
-                offset: new BMap.Size(5, 5)
+                offset: new BMap.Size(i>8?1:5, 5)
             });
             label.setStyle({
                 background: 'none',
@@ -114,6 +114,7 @@ function createMarker(items) {
             });
             marker.setLabel(label);
             marker.addEventListener("click", function (e) {
+                marker.setAnimation(4);
                 showInfo(marker.uid);
             });
             map.addOverlay(marker);
