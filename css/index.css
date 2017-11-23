@@ -45,10 +45,10 @@ h4 {
 }
 
 #searchResultPanel li {
-    margin: 0;
+    margin: 0 0 0 10px;
     padding: 8px 0;
     border-bottom: 1px solid #333;
-    list-style: none;
+    list-style: decimal;
     font-size: 16px;
     color: #fff;
 }
@@ -56,4 +56,31 @@ h4 {
 #searchResultPanel a {
     text-decoration-line: none;
     color: #fff;
+}
+
+
+#mapContainer {
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    background: #000;
+    color: #fff;
+    width: calc(100%-200px);
+    width: -webkit-calc(100%-200px);
+    width: -zom-calc(100%-200px);
+    height: 100%;
+}
+
+#mapContainer list{
+    text-decoration-line: none;
+    display: block;
+    color: #fff;
+    font-size: 16px;
+    padding: 5px;
+}
+
+.cbp-spmenu-push-toleft {
+    overflow-x: hidden;
+    position: relative;
+    left: 240px;
 }
