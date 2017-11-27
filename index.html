@@ -29,9 +29,9 @@
     </style>
 </head>
 
-<body>
+<body data-bind="css:{'cbp-spmenu-push-toleft':showMenu}">
     <!-- left -->
-    <div id="navPosition">
+    <div id="navPosition" data-bind="css:{openList:showMenu}">
         <h4>街区地图</h1>
             <input type="text" data-bind="event:{input:getValue}" size="20" placeholder="请输入查询内容" />
             <button style="line-height:21px" data-bind="click:goSearch">Go</button>
@@ -52,13 +52,12 @@
     <!-- right -->
     <div id="mapContainer">
         <div>
-            <a href="javascript:;" style="display:none" onclick="showList()">MENU</a>
+            <a href="javascript:;" class="menuLink" data-bind="click:changeList">MENU</a>
         </div>
         <div id="allmap"></div>
     </div>
     <!-- right end -->
 
-</body>
 </body>
 <script src="http://api.map.baidu.com/api?v=2.0&ak=jg25XKGpUAwxqo0IPxNqYA9GMtzIFpOU"></script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>

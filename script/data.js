@@ -1,4 +1,4 @@
-var myFavorite=[
+const  myFavorite=[
     {
         "name":"小龙坎老火锅（春熙店）",
         "location":{

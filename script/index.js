@@ -1,64 +1,65 @@
- //菜单触发
- (function (window) {
-    'use strict';
-    // class helper functions from bonzo https://github.com/ded/bonzo
+//  //菜单触发
+//  (function (window) {
+//     'use strict';
+//     // class helper functions from bonzo https://github.com/ded/bonzo
 
-    function classReg(className) {
-        return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
-    }
+//     function classReg(className) {
+//         return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+//     }
 
-    // classList support for class management
-    // altho to be fair, the api sucks because it won't accept multiple classes at once
-    var hasClass, addClass, removeClass;
+//     // classList support for class management
+//     // altho to be fair, the api sucks because it won't accept multiple classes at once
+//     var hasClass, addClass, removeClass;
 
-    if ('classList' in document.documentElement) {
-        hasClass = function (elem, c) {
-            return elem.classList.contains(c);
-        };
-        addClass = function (elem, c) {
-            elem.classList.add(c);
-        };
-        removeClass = function (elem, c) {
-            elem.classList.remove(c);
-        };
-    } else {
-        hasClass = function (elem, c) {
-            return classReg(c).test(elem.className);
-        };
-        addClass = function (elem, c) {
-            if (!hasClass(elem, c)) {
-                elem.className = elem.className + ' ' + c;
-            }
-        };
-        removeClass = function (elem, c) {
-            elem.className = elem.className.replace(classReg(c), ' ');
-        };
-    }
+//     if ('classList' in document.documentElement) {
+//         hasClass = function (elem, c) {
+//             return elem.classList.contains(c);
+//         };
+//         addClass = function (elem, c) {
+//             elem.classList.add(c);
+//         };
+//         removeClass = function (elem, c) {
+//             elem.classList.remove(c);
+//         };
+//     } else {
+//         hasClass = function (elem, c) {
+//             return classReg(c).test(elem.className);
+//         };
+//         addClass = function (elem, c) {
+//             if (!hasClass(elem, c)) {
+//                 elem.className = elem.className + ' ' + c;
+//             }
+//         };
+//         removeClass = function (elem, c) {
+//             elem.className = elem.className.replace(classReg(c), ' ');
+//         };
+//     }
 
-    function toggleClass(elem, c) {
-        var fn = hasClass(elem, c) ? removeClass : addClass;
-        fn(elem, c);
-    }
+//     function toggleClass(elem, c) {
+//         var fn = hasClass(elem, c) ? removeClass : addClass;
+//         fn(elem, c);
+//     }
 
-    window.classie = {
-        // full names
-        hasClass: hasClass,
-        addClass: addClass,
-        removeClass: removeClass,
-        toggleClass: toggleClass,
-        // short names
-        has: hasClass,
-        add: addClass,
-        remove: removeClass,
-        toggle: toggleClass
-    };
+//     window.classie = {
+//         // full names
+//         hasClass: hasClass,
+//         addClass: addClass,
+//         removeClass: removeClass,
+//         toggleClass: toggleClass,
+//         // short names
+//         has: hasClass,
+//         add: addClass,
+//         remove: removeClass,
+//         toggle: toggleClass
+//     };
 
-})(window);
+// })(window);
 
 //basic info
-let ak = 'jg25XKGpUAwxqo0IPxNqYA9GMtzIFpOU';
-let documentClient = document.documentElement || document.body;
-let mapObj = document.getElementById('allmap');
+const PC_MIN_WIDTH = 671;
+const ak = 'jg25XKGpUAwxqo0IPxNqYA9GMtzIFpOU';
+const documentClient = document.documentElement || document.body;
+const mapObj = document.getElementById('allmap');
 let markInfoWindow = null;
 let clientDivice = 'pc';
 var getContent = function (ad, tel, uid) {
@@ -69,11 +70,11 @@ var getContent = function (ad, tel, uid) {
         </div>`;
 }
 
-if (documentClient.clientWidth < 671) {
+if (documentClient.clientWidth < PC_MIN_WIDTH) {
     clientDivice = 'mobile';
 }
 window.onresize = function () {
-    if (documentClient.clientWidth < 671) {
+    if (documentClient.clientWidth < PC_MIN_WIDTH) {
         clientDivice = 'mobile';
     } else {
         clientDivice = 'pc';
@@ -165,7 +166,9 @@ function showInfo(uid) {
         } else {
             alert(content);
         }
-    })
+    }).catch(function() {
+        alert('请求详情信息报错，请检查：1，网络是否正常。2，是否安装的插件（详见READMME.md文件）。');
+      });
 }
 
 //数据查询和绑定
@@ -173,6 +176,7 @@ function viewModel() {
     var that = this;
     this.items = ko.observableArray(myFavorite);
     this.searchValue = ko.observable('');
+    this.showMenu=ko.observable(false);
     this.getValue = function (value, elment) {
         that.searchValue(elment.currentTarget.value)
     }
@@ -223,13 +227,16 @@ function viewModel() {
         }
         showList();
     }
+    this.changeList=function(){
+        that.showMenu(!that.showMenu());
+    }
 }
 ko.applyBindings(new viewModel());
 
-function showList() {
-    if (clientDivice == 'pc') {
-        return;
-    }
-    classie.toggle(document.body, 'cbp-spmenu-push-toleft');
-    classie.toggle(document.getElementById('navPosition'), 'openList');
-}
+// function showList() {
+//     if (clientDivice == 'pc') {
+//         return;
+//     }
+//     classie.toggle(document.body, 'cbp-spmenu-push-toleft');
+//     classie.toggle(document.getElementById('navPosition'), 'openList');
+// }

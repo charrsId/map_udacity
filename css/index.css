@@ -3,7 +3,25 @@ body {
     margin: 0;
     height: 100%;
     background: #000;
-    color:#fff;
+    color: #fff;
+}
+
+@media only screen and (max-width: 670px) {
+    #navPosition {
+        position: fixed;
+        left: -240px;
+    }
+    .openList {
+        left: 0px !important;
+    }
+    #navPosition {
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+    }
+    #mapContainer>div>a:nth-child(1) {
+        display: block !important;
+    }
 }
 
 #allmap {
@@ -21,14 +39,15 @@ body {
     float: left;
     width: 220px;
     height: 100%;
-  
 }
-#navPosition input{
+
+#navPosition input {
     margin-left: 3px;
     width: 150px;
     line-height: 20px;
     font-size: 16px;
 }
+
 h4 {
     margin: 0px;
 }
@@ -36,7 +55,6 @@ h4 {
 #searchResultPanel {
     padding-top: 10px;
     width: 100%;
-    
 }
 
 #searchResultPanel ul {
@@ -58,7 +76,6 @@ h4 {
     color: #fff;
 }
 
-
 #mapContainer {
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
@@ -71,7 +88,7 @@ h4 {
     height: 100%;
 }
 
-#mapContainer list{
+#mapContainer list {
     text-decoration-line: none;
     display: block;
     color: #fff;
@@ -83,4 +100,11 @@ h4 {
     overflow-x: hidden;
     position: relative;
     left: 240px;
+}
+
+.menuLink {
+    text-decoration-line: none;
+    display: none;
+    color: #fff;
+    font-size: 18px;
 }
